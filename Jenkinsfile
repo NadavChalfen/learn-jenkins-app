@@ -32,10 +32,7 @@ pipeline {
                 sh '''
                     test -f build/index.html
                     npm test 
-                    npm error code EACCES
-npm error syscall mkdir
-npm error path /usr/lib/node_modules/serve
-npm error errno -13
+                
 
                 '''
             }
@@ -51,9 +48,10 @@ npm error errno -13
             steps {
                 sh '''
                     npm install -g serve
-                    serve -s build &  # Run in background
-                    sleep 5  # Wait for the server to start
+                    serve -s build 
+        
                     npx playwright test
+                    
                 '''
             }
         }
