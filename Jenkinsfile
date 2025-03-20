@@ -32,6 +32,11 @@ pipeline {
                 sh '''
                     test -f build/index.html
                     npm test 
+                    npm error code EACCES
+npm error syscall mkdir
+npm error path /usr/lib/node_modules/serve
+npm error errno -13
+
                 '''
             }
         }
