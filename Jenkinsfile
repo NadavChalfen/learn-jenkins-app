@@ -11,13 +11,10 @@ pipeline {
             }
             steps {
                 sh '''
-                    ls -la
-                    node --version
-                    npm --version
                     npm ci
                     npm run build
-                    ls -la build/
                 '''
+                stash name: 'build-artifacts', includes: 'build/**'
             }
         }
 
@@ -29,11 +26,10 @@ pipeline {
                 }
             }
             steps {
+                unstash 'build-artifacts'
                 sh '''
                     test -f build/index.html
-                    npm test 
-                
-
+                    npm test
                 '''
             }
         }
@@ -46,12 +42,14 @@ pipeline {
                 }
             }
             steps {
+                unstash 'build-artifacts'
                 sh '''
                     npm install serve
-                    node_modules/.bin/serve -s build &
-                    sleep 10
+                    nohup node_modules/.bin/serve -s build -l 5000 > serve.log 2>&1 &
+                    sleep 5
+                    tail serve.log
+                    npx playwright install --with-deps
                     npx playwright test --reporter=html
-                    
                 '''
             }
         }
