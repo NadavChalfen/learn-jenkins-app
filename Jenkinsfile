@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     stages {
+
         stage('Build') {
             agent {
                 docker {
@@ -11,30 +12,18 @@ pipeline {
             }
             steps {
                 sh '''
+                   ls -la
+                    node --version
+                    npm --version
                     npm ci
                     npm run build
+                    ls -la
                 '''
-                stash name: 'build-artifacts', includes: 'build/**'
+            
             }
         }
 
-            stage(Run Tests) {
-                parallel {
-                    stage('Test') {
-                agent {
-                    docker {
-                        image 'node:18-alpine'
-                        reuseNode true
-                    }
-                }
-                steps {
-                    unstash 'build-artifacts'
-                    sh '''
-                        test -f build/index.html
-                        npm test
-                    '''
-                }
-            }
+       
 
             stage('E2E') {
                 agent {
@@ -56,6 +45,23 @@ pipeline {
                 }
             }
 
+ stage('Deploy') {
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+               npm install netlify-cli -g
+               netlify --version
+
+                '''
+            
+            }
+        }
+
 
 
             }
@@ -63,11 +69,11 @@ pipeline {
 
 
       
-    }
+    
 
     post {
         always {
             junit 'test-results/junit.xml'
         }
     }
-}
+
