@@ -20,8 +20,15 @@ pipeline {
         }
 
         stage('Test'){
+                agent {
+                docker 'node:18-alpine'
+            }
+            
             steps{
-                sh 'test -f build/index.html'
+                sh '''
+                test -f build/index.html
+                npm test
+                '''
             }
 
         }
