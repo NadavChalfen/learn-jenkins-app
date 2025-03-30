@@ -44,22 +44,23 @@ pipeline {
                     }
                 }
 
-                stage('E2E') {
-                    agent {
-                        docker {
-                            image 'mcr.microsoft.com/playwright:v1.51.1-noble'
-                        }
-                    }
+              stage('E2E') {
+    agent {
+        docker {
+            image 'mcr.microsoft.com/playwright:v1.51.1-noble'
+        }
+    }
 
-                    steps {
-                        sh '''
-                            npm install -g serve
-                            node_modules/.bin/serve -s build &
-                            sleep 10
-                            npx playwright test --reporter=html
-                        '''
-                    }
-                }
+    steps {
+        sh '''
+            npm install serve  # Install locally instead of globally
+            npx serve -s build &  # Use npx to run serve
+            sleep 10
+            npx playwright test --reporter=html
+        '''
+    }
+}
+
             }
         }
 
