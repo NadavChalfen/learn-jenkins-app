@@ -53,9 +53,10 @@ pipeline {
 
     steps {
         sh '''
-            npm install serve  # Install locally instead of globally
-            npm serve -s build &  # Use npx to run serve
-            npm playwright test --reporter=html
+            npm install serve  
+            node_modules/.bin/ serve -s build &  
+            sleep 10
+            npx playwright test --reporter=html
         '''
     }
 }
