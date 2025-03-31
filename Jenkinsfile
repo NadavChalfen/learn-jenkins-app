@@ -55,7 +55,7 @@ pipeline {
         sh '''
             npm install serve  # Install locally instead of globally
             npx serve -s build &  # Use npx to run serve
-            sleep 10
+
             npx playwright test --reporter=html
         '''
     }
